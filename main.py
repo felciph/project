@@ -1,30 +1,58 @@
+import tkinter as tk
+from tkinter import ttk
 
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel
-import sys
+# Create the main window
+root = tk.Tk()
+root.title("Breathe - Mindfulness App")
+root.geometry("800x600")
 
-class MyApp(QWidget):
+# Style configuration
+style = ttk.Style()
+style.configure('leftpane.TFrame', background='#2c5e4a')
+style.configure('content.TFrame', background='white')
 
-    def __init__(self):
-        super().__init__()
+# Left pane
+left_pane = ttk.Frame(root, width=200, style='leftpane.TFrame')
+left_pane.pack(side=tk.LEFT, fill=tk.Y)
 
-        self.setWindowTitle("My PyQt App")
-        self.setGeometry(100, 100, 800, 600)  # Window size (x, y, width, height)
+# Content pane
+content_pane = ttk.Frame(root, style='content.TFrame')
+content_pane.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        # Set the background color
-        self.setStyleSheet("background-color: black;")
+# Menu items
+menu_items = [
+    ("Mindfulness Exercises", lambda: display_content("Mindfulness Exercises")),
+    ("Relaxation Techniques", lambda: display_content("Relaxation Techniques")),
+    ("Stress Relief Tips", lambda: display_content("Stress Relief Tips")),
+    ("Customize Settings", lambda: display_content("Customize Settings")),
+    ("About", lambda: display_content("About"))
+]
 
-        # Create a label
-        self.label = QLabel("Insert app name", self)
-        self.label.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
+for text, command in menu_items:
+    btn = ttk.Button(left_pane, text=text, command=command)
+    btn.pack(fill=tk.X, padx=10, pady=5)
 
-        # Set the position of the label (x, y)
-        self.label.move(200, 200)  # Adjust these values as needed
+# Function to display content
+def display_content(title):
+    for widget in content_pane.winfo_children():
+        widget.destroy()
 
-        # Fullscreen mode
-        self.showFullScreen()
+    label = ttk.Label(content_pane, text=f"Welcome to {title}", font=("Helvetica", 16))
+    label.pack(pady=20)
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MyApp()
-    window.show()
-    sys.exit(app.exec())
+    description = {
+        "Mindfulness Exercises": "Engage in a series of tailored exercises designed to enhance your mindfulness and bring a sense of calm and focus to your day.",
+        "Relaxation Techniques": "Explore various techniques aimed at helping you unwind and manage stress effectively.",
+        "Stress Relief Tips": "Discover practical tips and tricks for reducing stress and improving your overall well-being.",
+        "Customize Settings": "Adjust settings to personalize your mindfulness journey.",
+        "About": "Learn more about the Breathe app and its creators."
+    }
+
+    desc_label = ttk.Label(content_pane, text=description[title], wraplength=600)
+    desc_label.pack(pady=10)
+
+# Initial content display
+display_content("Mindfulness Exercises")
+
+# Run the application
+root.mainloop()
